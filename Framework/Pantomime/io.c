@@ -32,6 +32,7 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>     // For memset()
 #include <netinet/in.h> // For ntohs() and friends. 
 

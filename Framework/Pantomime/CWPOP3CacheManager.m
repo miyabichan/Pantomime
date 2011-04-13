@@ -187,8 +187,7 @@ static unsigned short version = 1;
 {
   self = [super initWithPath: nil];
 
-  //_table = NSCreateMapTable(NSObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 128);
-  _table = [[NSMutableDictionary alloc] initWithCoder:128];
+  _table = [[NSMutableDictionary alloc] initWithCapacity:128];
   _fd = -1;
 
   [self setCache: [theCoder decodeObject]];
@@ -202,7 +201,6 @@ static unsigned short version = 1;
 //
 - (NSDate *) dateForUID: (NSString *) theUID
 {
-//  return NSMapGet(_table, theUID);
   return [_table objectForKey:theUID];
 }
 
@@ -237,10 +235,7 @@ static unsigned short version = 1;
   // Some POP3 servers, like popa3d, might return the same UID
   // for messages at different index but with the same content.
   // If that happens, we just don't write that value in our cache.
-  if (NSMapGet(_table, theRecord->pop3_uid))
-    {
-     return;
-   }
+  if ([_table objectForKey:theRecord->pop3_uid]) return;
 
   if (lseek(_fd, 0L, SEEK_END) < 0)
     {
@@ -252,9 +247,8 @@ static unsigned short version = 1;
 
   aData = [theRecord->pop3_uid dataUsingEncoding: NSASCIIStringEncoding];
   write_string(_fd, (unsigned char *)[aData bytes], [aData length]);
-  
-  
-  NSMapInsert(_table, theRecord->pop3_uid, [NSDate dateWithTimeIntervalSince1970: theRecord->date]);
+
+  [_table setObject:[NSDate dateWithTimeIntervalSince1970: theRecord->date] forKey:theRecord->pop3_uid];
   _count++;
 }
 

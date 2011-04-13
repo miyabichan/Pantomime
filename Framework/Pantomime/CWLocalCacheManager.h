@@ -46,6 +46,8 @@
     int _fd;
 }
 
+- (id) initWithPath: (NSString *) thePath  folder: (id) theFolder;
+
 /*!
   @method modificationDate
   @discussion This method is used to obtain the modification date

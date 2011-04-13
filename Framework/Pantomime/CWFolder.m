@@ -528,7 +528,6 @@
 	      aContainer = [[CWContainer alloc] init];
 	      aContainer->message = aMessage;
 	      [aMessage setProperty: aContainer  forKey: @"Container"];
-//	      NSMapInsert(id_table, [aMessage messageID], aContainer);
           [id_table setObject:aContainer forKey:[aMessage messageID]];
 	      DESTROY(aContainer);
 	    }
@@ -538,7 +537,6 @@
 	  aContainer = [[CWContainer alloc] init];
 	  aContainer->message = aMessage;
 	  [aMessage setProperty: aContainer  forKey: @"Container"];
-//	  NSMapInsert(id_table, [aMessage messageID], aContainer);
       [id_table setObject:aContainer forKey:[aMessage messageID]];
 	  DESTROY(aContainer);
 	}
@@ -552,7 +550,6 @@
 	  aReference = [[aMessage allReferences] objectAtIndex: j];
 
 	  // Find a container object for the given Message-ID
-//	  aContainer = NSMapGet(id_table, aReference);
       aContainer = [id_table objectForKey:aReference];
         
 	  if (aContainer)
@@ -563,7 +560,6 @@
 	  else 
 	    {
 	      aContainer = [[CWContainer alloc] init];
-	      //NSMapInsert(id_table, aReference, aContainer);
           [id_table setObject:aContainer forKey:aReference];
 	      RELEASE(aContainer);
 	    }
@@ -760,7 +756,6 @@
 	  //if (!NSMapGet(subject_table, aString))
       if (![subject_table objectForKey:aString])
 	    {
-//	      NSMapInsert(subject_table, aString, aContainer);
           [subject_table setObject:aContainer forKey:aString];
 	    }
 	  else
@@ -768,15 +763,12 @@
 	      NSString *aSubject;
 	      
 	      // We obtain the subject of the message of our container.
-//	      aSubject = [((CWContainer *)NSMapGet(subject_table, aString))->message subject];
           aSubject = [((CWContainer *)[subject_table objectForKey:aString])->message subject];
 
 	      if ([aSubject hasREPrefix] && ![[aMessage subject] hasREPrefix])
 		{
 		  // We replace the container
-		  //NSMapRemove(subject_table, aString);
           [subject_table removeObjectForKey:aString];
-		  //NSMapInsert(subject_table, [aMessage subject], aContainer);
           [subject_table setObject:aContainer forKey:[aMessage subject]];
 		}
 	    }
@@ -802,7 +794,6 @@
       
       // Look up the Container of that subject in the table.
       // If it is null, or if it is this container, continue.
-//      containerFromTable = NSMapGet(subject_table, aString);
       containerFromTable = [subject_table objectForKey:aString];
       if (!containerFromTable || containerFromTable == aContainer) 
 	{
@@ -894,10 +885,10 @@
 
   count = [allMessages count];
   
-  while (count--)
-    {
-      [[allMessages objectAtIndex: count] setProperty: nil  forKey: @"Container"];
-    }
+  while (count--) {
+    CWMessage* message = [allMessages objectAtIndex: count];
+    [message setProperty: nil  forKey: @"Container"];
+  }
 
   DESTROY(_allContainers);
 }
